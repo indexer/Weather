@@ -11,6 +11,8 @@ import com.indexer.weather.main.MainActivity;
 public interface GoogleSignInPresenter extends BasePresenter {
   void createGoogleClient(MainActivity loginView);
 
+  void signOut(MainActivity loginView);
+
   void signIn(MainActivity loginView);
 
   void onActivityResult(MainActivity loginView, int requestCode, int resultCode, Intent data);

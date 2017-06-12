@@ -11,6 +11,10 @@ public class DetailActivity extends BaseActivity {
     super.onCreate(savedInstanceState);
   }
 
+  @Override protected boolean needToolbar() {
+    return false;
+  }
+
   @Override protected int getLayoutResource() {
     return R.layout.activity_detail;
   }

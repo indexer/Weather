@@ -13,8 +13,7 @@
   <RelativeLayout android:layout_width="match_parent"
       android:id="@+id/view_container"
       android:visibility="gone"
-      android:layout_height="190dp"
-  >
+      android:layout_height="190dp">
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
@@ -53,6 +52,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/user_name"
         android:layout_alignStart="@+id/user_name"/>
+
 
   </RelativeLayout>
 

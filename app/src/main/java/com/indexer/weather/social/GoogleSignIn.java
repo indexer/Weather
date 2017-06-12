@@ -4,17 +4,24 @@ package com.indexer.weather.social;
  * Created by indexer on 12/6/17.
  */
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.indexer.weather.main.MainActivity;
 import com.indexer.weather.model.UserInfo;
 
@@ -40,10 +47,14 @@ public class GoogleSignIn implements GoogleSignInPresenter, GoogleApiClient.Conn
     // Build a GoogleApiClient with access to the Google Sign-In API and the
     // options specified by gso.
     mGoogleApiClient = new GoogleApiClient.Builder(loginView)
-        .enableAutoManage(loginView /* FragmentActivity */, this
-            /* OnConnectionFailedListener */)
+        .enableAutoManage(loginView, this)
         .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+        .addApi(LocationServices.API)
         .build();
+  }
+
+  @Override public void signOut(MainActivity loginView) {
+    fieldLoginView.updagteProfile(null);
   }
 
   @Override
@@ -85,8 +96,7 @@ public class GoogleSignIn implements GoogleSignInPresenter, GoogleApiClient.Conn
     }
   }
 
-  @Override
-  public void onConnected(@Nullable Bundle bundle) {
+  @Override public void onConnected(@Nullable Bundle bundle) {
 
   }
 
