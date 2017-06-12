@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/navigation_sub_header"
+      android:title="@string/sub_header_title">
+    <menu>
+      <item
+          android:id="@+id/navigation_sub_item_1"
+          android:title="@string/sub_menu_item"/>
+      <item
+          android:id="@+id/navigation_sub_item_2"
+          android:title="@string/sub_menu_item_predict"/>
+    </menu>
+  </item>
+</menu>
