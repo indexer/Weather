@@ -6,13 +6,11 @@ package com.indexer.weather.social;
 
 import android.content.Context;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.indexer.weather.model.UserInfo;
 
 public interface LoginView {
-  void specifyGoogleSignIn(GoogleSignInOptions gso);
 
-  void updagteProfile(UserInfo userInfo);
+  void updagteProfile(UserInfo us);
 
   Context getContext();
 }

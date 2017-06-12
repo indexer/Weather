@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -40,7 +39,6 @@ public class GoogleSignIn implements GoogleSignInPresenter, GoogleApiClient.Conn
         .build();
     // Build a GoogleApiClient with access to the Google Sign-In API and the
     // options specified by gso.
-    fieldLoginView.specifyGoogleSignIn(gso);
     mGoogleApiClient = new GoogleApiClient.Builder(loginView)
         .enableAutoManage(loginView /* FragmentActivity */, this
             /* OnConnectionFailedListener */)
@@ -66,23 +64,24 @@ public class GoogleSignIn implements GoogleSignInPresenter, GoogleApiClient.Conn
   }
 
   private void handleSignInResult(GoogleSignInResult result) {
-    //Log.d(TAG, "handleSignInResult:" + result.isSuccess());
     if (result.isSuccess()) {
       // Signed in successfully, show authenticated UI.
       GoogleSignInAccount acct = result.getSignInAccount();
-      String personName = acct.getDisplayName();
-      String personEmail = acct.getEmail();
-      String personId = acct.getId();
-      Uri personPhoto = acct.getPhotoUrl();
-      UserInfo userModelSingleton = UserInfo.getInstance();
-      userModelSingleton.setUser_name(personName);
-      userModelSingleton.setEmail(personEmail);
-      userModelSingleton.setAvatarURL(personPhoto.toString());
-      userModelSingleton.setBday(" ");
-      fieldLoginView.updagteProfile(userModelSingleton);
-    } else {
-      // Signed out, show unauthenticated UI.
-      //updateUI(false);
+      if (acct != null) {
+        String personName = acct.getDisplayName();
+        String personEmail = acct.getEmail();
+        String personId = acct.getId();
+        Uri personPhoto = acct.getPhotoUrl();
+        UserInfo userModelSingleton = UserInfo.getInstance();
+        userModelSingleton.setId(personId);
+        userModelSingleton.setUser_name(personName);
+        userModelSingleton.setEmail(personEmail);
+        if (personPhoto != null) {
+          userModelSingleton.setAvatarURL(personPhoto.toString());
+        }
+        userModelSingleton.setBday(" ");
+        fieldLoginView.updagteProfile(userModelSingleton);
+      }
     }
   }
 

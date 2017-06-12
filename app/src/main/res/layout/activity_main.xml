@@ -20,11 +20,7 @@
           app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
           app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
     </android.support.design.widget.AppBarLayout>
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/button_google_sign_in"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+
   </RelativeLayout>
 
   <android.support.design.widget.NavigationView

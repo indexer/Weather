@@ -22,12 +22,10 @@ public class RestClient {
     builder.writeTimeout(10, TimeUnit.SECONDS);
     builder.readTimeout(30, TimeUnit.SECONDS);
     OkHttpClient client = builder.build();
-
     final Retrofit restAdapter = new Retrofit.Builder().baseUrl(Config.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build();
-
     mService = restAdapter.create(RestService.class);
   }
 
