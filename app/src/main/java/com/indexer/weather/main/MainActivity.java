@@ -2,12 +2,14 @@ package com.indexer.weather.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +35,7 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,6 +56,7 @@ public class MainActivity extends BaseActivity
   private GoogleSignInPresenter signInGooglePresenter;
   private MainWeatherInfo mainWeatherInfo;
   private Menu nav_Menu;
+  private ActionBarDrawerToggle drawerToggle;
   View headerView;
   TextView mUserName;
   TextView mUserEmail;
@@ -65,7 +69,7 @@ public class MainActivity extends BaseActivity
     setSupportActionBar(mToolbar);
     if (getSupportActionBar() != null) {
       getSupportActionBar().setDisplayShowTitleEnabled(false);
-      ActionBarDrawerToggle drawerToggle =
+      drawerToggle =
           new ActionBarDrawerToggle(this, getmDrawerLayout, mToolbar,
               R.string.drawer_open,
               R.string.drawer_close);
@@ -96,6 +100,14 @@ public class MainActivity extends BaseActivity
     initComponents();
   }
 
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (drawerToggle.onOptionsItemSelected(item)) {
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
   public void initComponents() {
     headerView = navigationView.getHeaderView(0);
     mUserName = (TextView) headerView.findViewById(R.id.user_name);
@@ -117,6 +129,20 @@ public class MainActivity extends BaseActivity
 
   @Override protected int getLayoutResource() {
     return R.layout.activity_main;
+  }
+
+  @Override
+  protected void onPostCreate(Bundle savedInstanceState) {
+    super.onPostCreate(savedInstanceState);
+    // Sync the toggle state after onRestoreInstanceState has occurred.
+    drawerToggle.syncState();
+  }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    // Pass any configuration change to the drawer toggles
+    drawerToggle.onConfigurationChanged(newConfig);
   }
 
   @Override protected void onStart() {
@@ -149,15 +175,12 @@ public class MainActivity extends BaseActivity
       mTempTextView.setText(String.format("%s%sC", c.toString(), degree));
       mTextCityName.setText(weatherData.name);
       mWeatherDescription.setText(weatherData.weather.get(0).description);
-      mWeatherHumidity.setText(String.format("Humidity %d %% ", weatherData.main.humidity));
+      mWeatherHumidity.setText(Utils.getFormattedHumidity(this, weatherData.main.humidity));
       String getWindwithFormat =
           Utils.getFormattedWind(this, weatherData.wind.speed, weatherData.wind.deg);
       mWeatherWind.setText(getWindwithFormat);
-      Date date = new Date(weatherData.dt * 1000L);
       // format of the date
-      SimpleDateFormat jdf = new SimpleDateFormat("hh:mm");
-      String current_date = jdf.format(date);
-      mWeatherTime.setText(current_date);
+      mWeatherTime.setText(Utils.getFriendlyDayString(this, weatherData.dt));
       String webIcon =
           String.format("http://openweathermap.org/img/w/%s.png", weatherData.weather.get(0).icon);
       Picasso.with(this).load(webIcon).into(imageView);

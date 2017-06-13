@@ -10,6 +10,7 @@
       android:layout_height="wrap_content">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
+        android:id="@+id/app_bar_layout"
         android:background="@color/colorPrimary"
         android:layout_height="260dp">
 
@@ -90,9 +91,7 @@
               android:layout_height="wrap_content"/>
 
           <TextView
-              android:drawablePadding="8dp"
               android:layout_alignParentEnd="true"
-              android:drawableLeft="@drawable/time"
               android:layout_margin="8dp"
               android:gravity="center"
               android:id="@+id/weather_time"
@@ -105,6 +104,12 @@
       </RelativeLayout>
 
     </android.support.design.widget.AppBarLayout>
+    <FrameLayout
+        android:layout_below="@+id/app_bar_layout"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 
   </RelativeLayout>
 
