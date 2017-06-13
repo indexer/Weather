@@ -48,7 +48,7 @@ public class GoogleSignIn implements GoogleSignInPresenter, GoogleApiClient.Conn
   }
 
   @Override public void signOut(MainActivity loginView) {
-    fieldLoginView.updagteProfile(null);
+    fieldLoginView.updateUserProfile(null);
   }
 
   @Override
@@ -85,7 +85,7 @@ public class GoogleSignIn implements GoogleSignInPresenter, GoogleApiClient.Conn
           userModelSingleton.setAvatarURL(personPhoto.toString());
         }
         userModelSingleton.setBday(" ");
-        fieldLoginView.updagteProfile(userModelSingleton);
+        fieldLoginView.updateUserProfile(userModelSingleton);
       }
     }
   }

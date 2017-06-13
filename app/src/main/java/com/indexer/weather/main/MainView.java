@@ -6,7 +6,7 @@ import com.indexer.weather.model.WeatherData;
 
 public interface MainView {
 
-  void updagteHeader(WeatherData weatherData);
+  void updateHeader(WeatherData weatherData);
 
   void updateProfile(UserInfo userInfo);
 

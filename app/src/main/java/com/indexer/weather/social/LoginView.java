@@ -10,7 +10,7 @@ import com.indexer.weather.model.UserInfo;
 
 public interface LoginView {
 
-  void updagteProfile(UserInfo us);
+  void updateUserProfile(UserInfo us);
 
   Context getContext();
 }

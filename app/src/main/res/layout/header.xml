@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="190dp"
+    android:background="@color/colorPrimary"
+    android:layout_height="200dp"
 >
   <com.google.android.gms.common.SignInButton
       android:id="@+id/button_google_sign_in"
@@ -13,7 +14,7 @@
   <RelativeLayout android:layout_width="match_parent"
       android:id="@+id/view_container"
       android:visibility="gone"
-      android:layout_height="190dp">
+      android:layout_height="match_parent">
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
@@ -31,7 +32,7 @@
         android:layout_height="wrap_content"
         android:text="Ye Mon Kyaw"
         android:textSize="14sp"
-        android:textColor="#000"
+        android:textColor="#FFF"
         android:textStyle="bold"
         android:gravity="left"
         android:paddingBottom="4dp"
@@ -48,7 +49,7 @@
         android:gravity="left"
         android:layout_marginBottom="8dp"
         android:textSize="14sp"
-        android:textColor="#000"
+        android:textColor="#FFF"
         android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/user_name"
         android:layout_alignStart="@+id/user_name"/>

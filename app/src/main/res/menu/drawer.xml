@@ -4,18 +4,19 @@
       android:id="@+id/navigation_sub_header"
       android:title="@string/sub_header_title">
     <menu>
-      <item
-          android:id="@+id/navigation_sub_item_1"
-          android:title="@string/sub_menu_item"/>
-      <item
-          android:id="@+id/navigation_sub_item_2"
-          android:title="@string/sub_menu_item_predict"/>
+      <group android:id="@+id/his_move" android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_sub_item_1"
+            android:title="@string/sub_menu_item"/>
+        <item
+            android:id="@+id/navigation_sub_item_2"
+            android:title="@string/sub_menu_item_predict"/>
 
-      <item
-          android:visible="false"
-          android:id="@+id/navigation_sub_item_logout"
-          android:title="@string/sub_menu_item_logout"/>
-
+        <item
+            android:visible="false"
+            android:id="@+id/navigation_sub_item_logout"
+            android:title="@string/sub_menu_item_logout"/>
+      </group>
     </menu>
   </item>
 </menu>
