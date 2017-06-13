@@ -9,7 +9,7 @@ import com.indexer.weather.R;
 
 public class Utils {
   public static String getFormattedWind(Context context, float windSpeed, float degrees) {
-    int windFormat = 0;
+    int windFormat;
     windFormat = R.string.format_wind_kmh;
     // From wind direction in degrees, determine compass direction as a string (e.g NW)
     // You know what's fun, writing really long if/else statements with tons of possible

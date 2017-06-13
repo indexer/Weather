@@ -11,11 +11,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import io.fabric.sdk.android.Fabric;
 import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -33,6 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
     setContentView(getLayoutResource());
     buildGoogleApiClient();
+    Fabric.with(this, new Crashlytics());
     EasyPermissions.requestPermissions(this, "NEED SMS PLZ", 1001,
         Manifest.permission.ACCESS_FINE_LOCATION);
     mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

@@ -2,13 +2,13 @@ package com.indexer.weather.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.icu.util.TimeZone;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,11 +19,13 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.google.android.gms.common.SignInButton;
-import com.indexer.weather.base.BaseActivity;
 import com.indexer.weather.R;
+import com.indexer.weather.base.BaseActivity;
 import com.indexer.weather.base.Utils;
+import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
 import com.indexer.weather.model.WeatherData;
+import com.indexer.weather.rest.RestClient;
 import com.indexer.weather.social.GoogleSignIn;
 import com.indexer.weather.social.GoogleSignInPresenter;
 import com.indexer.weather.social.LoginView;
@@ -31,6 +33,9 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends BaseActivity
     implements LoginView, MainView, NavigationView.OnNavigationItemSelectedListener {
@@ -68,11 +73,30 @@ public class MainActivity extends BaseActivity
       drawerToggle.syncState();
     }
 
+    Call<ForecastReturnObject> weatherReturnObjectCall =
+        RestClient.getService(this)
+            .getWeatherForecastLocation(13.736717, 100.523186, 5);
+    weatherReturnObjectCall.enqueue(new Callback<ForecastReturnObject>() {
+      @Override public void onResponse(@NonNull Call<ForecastReturnObject> call,
+          @NonNull Response<ForecastReturnObject> response) {
+        Log.e("Responze value", "=" + response.body().getList().size());
+      }
+
+      @Override
+      public void onFailure(@NonNull Call<ForecastReturnObject> call, @NonNull Throwable t) {
+        Log.e("Responze error", "=" + t.getMessage());
+      }
+    });
+
     //Google+
     signInGooglePresenter = new GoogleSignIn(this);
     mainWeatherInfo = new MainWeatherInfo(this);
     mainWeatherInfo.getWeatherToday(this);
     signInGooglePresenter.createGoogleClient(this);
+    initComponents();
+  }
+
+  public void initComponents() {
     headerView = navigationView.getHeaderView(0);
     mUserName = (TextView) headerView.findViewById(R.id.user_name);
     mUserEmail = (TextView) headerView.findViewById(R.id.user_email);

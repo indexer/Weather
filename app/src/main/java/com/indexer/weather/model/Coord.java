@@ -3,12 +3,32 @@ package com.indexer.weather.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Created by indexer on 13/6/17.
+ */
+
 public class Coord {
 
   @SerializedName("lon")
   @Expose
-  public Double lon;
+  private Double lon;
   @SerializedName("lat")
   @Expose
-  public Double lat;
+  private Double lat;
+
+  public Double getLon() {
+    return lon;
+  }
+
+  public void setLon(Double lon) {
+    this.lon = lon;
+  }
+
+  public Double getLat() {
+    return lat;
+  }
+
+  public void setLat(Double lat) {
+    this.lat = lat;
+  }
 }
