@@ -9,7 +9,7 @@ import com.indexer.weather.base.BasePresenter;
 
 public interface ForecastWeatherPresenter extends BasePresenter {
 
-  void getWeatherForecast(Activity mainActivity);
+  void getWeatherForecast(Activity mainActivity, int day);
 
   void onError(String message);
 }

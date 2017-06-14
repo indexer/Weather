@@ -19,5 +19,6 @@ public class Config {
   public static String USER_BDAY = "user_bday";
   public static String USER_EMAIL = "user_email";
   public static String USER_PFILE="user_profile";
+  public static String unit ="metric";
 }
 

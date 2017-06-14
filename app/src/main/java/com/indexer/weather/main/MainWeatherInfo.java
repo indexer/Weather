@@ -38,7 +38,7 @@ public class MainWeatherInfo implements MainPresenter {
 
     Call<ForecastReturnObject> weatherReturnObjectCall =
         RestClient.getService(mainActivity)
-            .getWeatherForecastLocation(lat, lng, 1);
+            .getWeatherForecastLocation(lat, lng, 1,Config.unit);
     weatherReturnObjectCall.enqueue(new Callback<ForecastReturnObject>() {
       @Override
       public void onResponse(@NonNull Call<ForecastReturnObject> call,

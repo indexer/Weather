@@ -1,5 +1,7 @@
 package com.indexer.weather.main;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -27,6 +29,7 @@ import com.indexer.weather.R;
 import com.indexer.weather.base.BaseActivity;
 import com.indexer.weather.base.Utils;
 import com.indexer.weather.forecastFragment.ForecastFragment;
+import com.indexer.weather.forecastWeatherFragment.ForecastWeatherFragment;
 import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
 import com.indexer.weather.social.GoogleSignIn;
@@ -34,7 +37,6 @@ import com.indexer.weather.social.GoogleSignInPresenter;
 import com.indexer.weather.social.LoginView;
 import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
-;
 
 public class MainActivity extends BaseActivity
     implements LoginView, MainView, NavigationView.OnNavigationItemSelectedListener {
@@ -55,6 +57,7 @@ public class MainActivity extends BaseActivity
   private Menu nav_Menu;
   private ActionBarDrawerToggle drawerToggle;
   ForecastFragment forecastFragment;
+  ForecastWeatherFragment forecastWeatherFragment;
   View headerView;
   TextView mUserName;
   TextView mUserEmail;
@@ -177,9 +180,9 @@ public class MainActivity extends BaseActivity
 
   @Override public void updateHeader(ForecastReturnObject weatherData) {
     if (weatherData != null) {
-      char degree = '\u00B0';
-      Double c = (double) Math.round(weatherData.getList().get(0).getTemp().getDay() - 273.16);
-      mTempTextView.setText(String.format("%s%sC", c.toString(), degree));
+      mTempTextView.setText(
+          Utils.formatTemperature(this, weatherData.getList().get(0).getTemp().getDay(),
+              true) + "C");
       mTextCityName.setText(weatherData.getCity().getName());
       mWeatherDescription.setText(weatherData.getList().get(0).getWeather().get(0).description);
       mWeatherHumidity.setText(
@@ -226,9 +229,17 @@ public class MainActivity extends BaseActivity
       // Handle the home action
       mainWeatherInfo.signOut(this);
     } else if (id == R.id.navigation_sub_item_1) {
-      Toast.makeText(this, "Hello 5day Focus", Toast.LENGTH_LONG).show();
+
     } else if (id == R.id.navigation_sub_item_2) {
-      Toast.makeText(this, "Hello 12day Focus", Toast.LENGTH_LONG).show();
+      forecastWeatherFragment = new ForecastWeatherFragment();
+      android.support.v4.app.FragmentTransaction transaction =
+          getSupportFragmentManager().beginTransaction();
+      // Replace whatever is in the fragment_container view with this fragment,
+      // and add the transaction to the back stack so the user can navigate back
+      transaction.replace(R.id.fragment_container, forecastWeatherFragment);
+      transaction.addToBackStack(null);
+      // Commit the transaction
+      transaction.commit();
     }
 
     getmDrawerLayout.closeDrawer(GravityCompat.START);

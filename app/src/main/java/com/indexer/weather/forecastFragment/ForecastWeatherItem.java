@@ -1,9 +1,12 @@
 package com.indexer.weather.forecastFragment;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.text.format.Time;
 import android.util.Log;
+import com.indexer.weather.base.Config;
 import com.indexer.weather.main.MainActivity;
 import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.Weather;
@@ -22,7 +25,7 @@ public class ForecastWeatherItem implements ForecastWeatherPresenter {
   long dateTime;
   ArrayList<Weather> weatherArrayList = new ArrayList<>();
 
-  ForecastWeatherItem(ForecastWeatherView forecastWeatherItemView) {
+  public ForecastWeatherItem(ForecastWeatherView forecastWeatherItemView) {
     this.forecastWeatherItemView = forecastWeatherItemView;
   }
 
@@ -46,10 +49,15 @@ public class ForecastWeatherItem implements ForecastWeatherPresenter {
 
   }
 
-  @Override public void getWeatherForecast(Activity mainActivity) {
+  @Override public void getWeatherForecast(Activity mainActivity, int day) {
+    SharedPreferences mSharedPreferences = PreferenceManager.
+        getDefaultSharedPreferences(mainActivity.getApplicationContext());
+    float lat = mSharedPreferences.getFloat(Config.LAST_LATITUDE, 0);
+    float lng = mSharedPreferences.getFloat(Config.LAST_LONGITUDE, 0);
+
     Call<ForecastReturnObject> weatherReturnObjectCall =
         RestClient.getService(mainActivity)
-            .getWeatherForecastLocation(13.736717, 100.523186, 5);
+            .getWeatherForecastLocation(lat, lng, day, Config.unit);
     weatherReturnObjectCall.enqueue(new Callback<ForecastReturnObject>() {
       @Override public void onResponse(@NonNull Call<ForecastReturnObject> call,
           @NonNull Response<ForecastReturnObject> response) {

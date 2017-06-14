@@ -16,7 +16,7 @@ public interface RestService {
   @Headers("x-api-key: " + Config.API_KEY)
   @GET(Config.LOCATION_FORECAST)
   Call<ForecastReturnObject> getWeatherForecastLocation(@Query("lat") double latitude,
-      @Query("lon") double longitude, @Query("cnt") int cnt);
+      @Query("lon") double longitude, @Query("cnt") int cnt,@Query("units") String units);
 }
 
 

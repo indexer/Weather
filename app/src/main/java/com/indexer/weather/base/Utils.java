@@ -33,6 +33,14 @@ public class Utils {
     }
   }
 
+  public static String formatTemperature(Context context, double temperature, boolean isMetric) {
+    double temp = temperature;
+    if (context.getString(R.string.format_temperature, temp).contains("-0")) {
+      temp = 0;
+    }
+    return context.getString(R.string.format_temperature, temp);
+  }
+
   public static String getFriendlyDayString(Context context, long dateInMillis) {
     // The day string for forecast uses the following logic:
     // For today: "Today, June 8"
