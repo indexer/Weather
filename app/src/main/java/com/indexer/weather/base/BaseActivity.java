@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import io.fabric.sdk.android.Fabric;
 import java.util.List;
+import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public abstract class BaseActivity extends AppCompatActivity
@@ -37,8 +38,10 @@ public abstract class BaseActivity extends AppCompatActivity
     setContentView(getLayoutResource());
     buildGoogleApiClient();
     Fabric.with(this, new Crashlytics());
-    EasyPermissions.requestPermissions(this, "NEED SMS PLZ", 1001,
+    EasyPermissions.requestPermissions(this, "Need Locations for weather information",
+        1001,
         Manifest.permission.ACCESS_FINE_LOCATION);
+
     mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     isConnected = Utils.isNetworkAvaliable(this);
   }
@@ -96,7 +99,12 @@ public abstract class BaseActivity extends AppCompatActivity
 
   @Override
   public void onPermissionsDenied(int requestCode, List<String> perms) {
-    Log.d("Base", "onPermissionsDenied:" + requestCode + ":" + perms.size());
+    // This will display a dialog directing them to enable the permission in app settings.
+    /*if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+      new AppSettingsDialog.Builder(this).build().show();
+    }*/
+    EasyPermissions.requestPermissions(this, "Need Locations for weather information", 1001,
+        Manifest.permission.ACCESS_FINE_LOCATION);
   }
 
   @Override public void onConnectionSuspended(int i) {

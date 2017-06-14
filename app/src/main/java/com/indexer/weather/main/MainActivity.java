@@ -13,7 +13,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -103,7 +102,7 @@ public class MainActivity extends BaseActivity
   }
 
   private void noInternetAction() {
-    getmDrawerLayout.closeDrawer(Gravity.LEFT);
+    getmDrawerLayout.closeDrawer(Gravity.START);
     Snackbar snackbar = Snackbar
         .make(coordinatorLayout, "There is no Network Connection", Snackbar.LENGTH_LONG)
         .setAction("Open", new View.OnClickListener() {
@@ -118,10 +117,7 @@ public class MainActivity extends BaseActivity
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (drawerToggle.onOptionsItemSelected(item)) {
-      return true;
-    }
-    return super.onOptionsItemSelected(item);
+    return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
   }
 
   public void initComponents() {
@@ -142,7 +138,7 @@ public class MainActivity extends BaseActivity
     mUserInfo = UserInfo.getInstance();
     mUserInfo.readCach(this);
     if (mUserInfo.getUser_name().equals("NONE")) {
-      getmDrawerLayout.openDrawer(Gravity.LEFT);
+      getmDrawerLayout.openDrawer(Gravity.START);
     } else {
       showAlreadyUser(mUserInfo);
     }
@@ -202,16 +198,17 @@ public class MainActivity extends BaseActivity
     getmButtonGoogleSignIn.setVisibility(View.GONE);
     nav_Menu = navigationView.getMenu();
     nav_Menu.findItem(R.id.navigation_sub_item_logout).setVisible(true);
-    if (getmDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-      getmDrawerLayout.closeDrawer(Gravity.LEFT);
+    if (getmDrawerLayout.isDrawerOpen(Gravity.START)) {
+      getmDrawerLayout.closeDrawer(Gravity.START);
     }
   }
 
   @Override public void updateHeader(ForecastReturnObject weatherData) {
     if (weatherData != null) {
       mTempTextView.setText(
-          Utils.formatTemperature(this, weatherData.getList().get(0).getTemp().getDay(),
-              true) + "C");
+          String.format("%sC",
+              Utils.formatTemperature(this, weatherData.getList().get(0).getTemp().getDay(),
+                  true)));
       mTextCityName.setText(weatherData.getCity().getName());
       mWeatherDescription.setText(weatherData.getList().get(0).getWeather().get(0).description);
       mWeatherHumidity.setText(
@@ -244,9 +241,6 @@ public class MainActivity extends BaseActivity
       getmButtonGoogleSignIn.setVisibility(View.VISIBLE);
     }
   }
-
-
-    /**/
 
   public android.support.v4.app.Fragment getVisibleFragment() {
     FragmentManager fragmentManager = getSupportFragmentManager();
