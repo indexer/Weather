@@ -32,8 +32,8 @@ public abstract class BaseAdapter<VH extends BaseViewHolder, T> extends Recycler
   /**
    * @param items new array list for adapter
    */
-  public void setItems(List<T> items) {
-    this.mItems = items;
+  public void setItems(List<com.indexer.weather.model.List> items) {
+    this.mItems = (List<T>) items;
     notifyDataSetChanged();
   }
 

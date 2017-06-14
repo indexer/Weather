@@ -11,9 +11,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,21 +26,17 @@ import com.google.android.gms.common.SignInButton;
 import com.indexer.weather.R;
 import com.indexer.weather.base.BaseActivity;
 import com.indexer.weather.base.Utils;
+import com.indexer.weather.forecastFragment.ForecastFragment;
+import com.indexer.weather.forecastFragment.ForecastWeatherItem;
 import com.indexer.weather.model.ForecastReturnObject;
+import com.indexer.weather.model.List;
 import com.indexer.weather.model.UserInfo;
-import com.indexer.weather.model.WeatherData;
-import com.indexer.weather.rest.RestClient;
 import com.indexer.weather.social.GoogleSignIn;
 import com.indexer.weather.social.GoogleSignInPresenter;
 import com.indexer.weather.social.LoginView;
 import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+;
 
 public class MainActivity extends BaseActivity
     implements LoginView, MainView, NavigationView.OnNavigationItemSelectedListener {
@@ -53,13 +51,16 @@ public class MainActivity extends BaseActivity
   @BindView(R.id.weather_humidity) TextView mWeatherHumidity;
   @BindView(R.id.weather_wind) TextView mWeatherWind;
   @BindView(R.id.weather_time) TextView mWeatherTime;
+  @BindView(R.id.fragment_container) FrameLayout mFragmentContainer;
   private GoogleSignInPresenter signInGooglePresenter;
   private MainWeatherInfo mainWeatherInfo;
   private Menu nav_Menu;
   private ActionBarDrawerToggle drawerToggle;
+  ForecastFragment forecastFragment;
   View headerView;
   TextView mUserName;
   TextView mUserEmail;
+  UserInfo mUserInfo;
   RelativeLayout view_container;
   SignInButton getmButtonGoogleSignIn;
 
@@ -76,21 +77,6 @@ public class MainActivity extends BaseActivity
       getmDrawerLayout.addDrawerListener(drawerToggle);
       drawerToggle.syncState();
     }
-
-    Call<ForecastReturnObject> weatherReturnObjectCall =
-        RestClient.getService(this)
-            .getWeatherForecastLocation(13.736717, 100.523186, 5);
-    weatherReturnObjectCall.enqueue(new Callback<ForecastReturnObject>() {
-      @Override public void onResponse(@NonNull Call<ForecastReturnObject> call,
-          @NonNull Response<ForecastReturnObject> response) {
-        Log.e("Responze value", "=" + response.body().getList().size());
-      }
-
-      @Override
-      public void onFailure(@NonNull Call<ForecastReturnObject> call, @NonNull Throwable t) {
-        Log.e("Responze error", "=" + t.getMessage());
-      }
-    });
 
     //Google+
     signInGooglePresenter = new GoogleSignIn(this);
@@ -109,6 +95,9 @@ public class MainActivity extends BaseActivity
   }
 
   public void initComponents() {
+    forecastFragment = new ForecastFragment();
+    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
+        forecastFragment).commit();
     headerView = navigationView.getHeaderView(0);
     mUserName = (TextView) headerView.findViewById(R.id.user_name);
     mUserEmail = (TextView) headerView.findViewById(R.id.user_email);
@@ -120,6 +109,13 @@ public class MainActivity extends BaseActivity
         signInGooglePresenter.signIn(MainActivity.this);
       }
     });
+    mUserInfo = UserInfo.getInstance();
+    mUserInfo.readCach(this);
+    if (mUserInfo.getUser_name().equals("NONE")) {
+      getmDrawerLayout.openDrawer(Gravity.LEFT);
+    } else {
+      showAlreadyUser(mUserInfo);
+    }
     navigationView.setNavigationItemSelectedListener(this);
   }
 
@@ -151,14 +147,8 @@ public class MainActivity extends BaseActivity
     mainWeatherInfo.start();
   }
 
-  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    signInGooglePresenter.onActivityResult(MainActivity.this, requestCode, resultCode, data);
-  }
-
-  @Override public void updateUserProfile(UserInfo UserInfo) {
+  public void showAlreadyUser(UserInfo UserInfo) {
     CircleImageView drawerImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
-    drawerImage.setImageDrawable(getDrawable(R.mipmap.ic_launcher));
     Picasso.with(this).load(UserInfo.getAvatarURL()).into(drawerImage);
     mUserName.setText(UserInfo.getUser_name());
     mUserEmail.setText(UserInfo.getUser_email());
@@ -168,21 +158,51 @@ public class MainActivity extends BaseActivity
     nav_Menu.findItem(R.id.navigation_sub_item_logout).setVisible(true);
   }
 
-  @Override public void updateHeader(WeatherData weatherData) {
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    signInGooglePresenter.onActivityResult(MainActivity.this, requestCode, resultCode, data);
+  }
+
+  @Override public void updateUserProfile(UserInfo UserInfo) {
+    CircleImageView drawerImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
+    Picasso.with(this).load(UserInfo.getAvatarURL()).into(drawerImage);
+    mUserName.setText(UserInfo.getUser_name());
+    mUserEmail.setText(UserInfo.getUser_email());
+    view_container.setVisibility(View.VISIBLE);
+    getmButtonGoogleSignIn.setVisibility(View.GONE);
+    nav_Menu = navigationView.getMenu();
+    nav_Menu.findItem(R.id.navigation_sub_item_logout).setVisible(true);
+    if (getmDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+      getmDrawerLayout.closeDrawer(Gravity.LEFT);
+    }
+  }
+
+  @Override public void updateHeader(ForecastReturnObject weatherData) {
     if (weatherData != null) {
       char degree = '\u00B0';
-      Double c = (double) Math.round(weatherData.main.temp - 273.16);
+      Double c = (double) Math.round(weatherData.getList().get(0).getTemp().getDay() - 273.16);
       mTempTextView.setText(String.format("%s%sC", c.toString(), degree));
-      mTextCityName.setText(weatherData.name);
-      mWeatherDescription.setText(weatherData.weather.get(0).description);
-      mWeatherHumidity.setText(Utils.getFormattedHumidity(this, weatherData.main.humidity));
+      mTextCityName.setText(weatherData.getCity().getName());
+      mWeatherDescription.setText(weatherData.getList().get(0).getWeather().get(0).description);
+      mWeatherHumidity.setText(
+          Utils.getFormattedHumidity(this, weatherData.getList().get(0).getHumidity()));
       String getWindwithFormat =
-          Utils.getFormattedWind(this, weatherData.wind.speed, weatherData.wind.deg);
+          Utils.getFormattedWind(this, weatherData.getList().get(0).getSpeed(),
+              weatherData.getList().get(0).getDeg());
       mWeatherWind.setText(getWindwithFormat);
       // format of the date
-      mWeatherTime.setText(Utils.getFriendlyDayString(this, weatherData.dt));
+      //Today Time
+      Time dayTime = new Time();
+      dayTime.setToNow();
+      long dateTime;
+      // we start at the day returned by local time. Otherwise this is a mess.
+      int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
+      dayTime = new Time();
+      dateTime = dayTime.setJulianDay(julianStartDay);
+      mWeatherTime.setText(Utils.getFriendlyDayString(this, dateTime));
       String webIcon =
-          String.format("http://openweathermap.org/img/w/%s.png", weatherData.weather.get(0).icon);
+          String.format("http://openweathermap.org/img/w/%s.png",
+              weatherData.getList().get(0).getWeather().get(0).icon);
       Picasso.with(this).load(webIcon).into(imageView);
     }
   }

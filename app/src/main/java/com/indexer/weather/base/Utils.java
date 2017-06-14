@@ -75,7 +75,7 @@ public class Utils {
     return context.getString(R.string.format_humidity, humidity);
   }
 
-  public static String getFormattedWind(Context context, float windSpeed, float degrees) {
+  public static String getFormattedWind(Context context, Double windSpeed, float degrees) {
     int windFormat;
     windFormat = R.string.format_wind_kmh;
     // From wind direction in degrees, determine compass direction as a string (e.g NW)

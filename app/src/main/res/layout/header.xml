@@ -28,6 +28,7 @@
         android:layout_marginStart="24dp"/>
 
     <TextView
+        android:fontFamily="sans-serif-condensed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ye Mon Kyaw"
@@ -42,6 +43,7 @@
         android:layout_alignStart="@+id/profile_image"/>
 
     <TextView
+        android:fontFamily="sans-serif-condensed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="yemonkyaw007@gmail.com"

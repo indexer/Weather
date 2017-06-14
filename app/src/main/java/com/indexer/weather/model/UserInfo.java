@@ -1,5 +1,9 @@
 package com.indexer.weather.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import com.indexer.weather.base.Config;
+
 /**
  * Created by indexer on 12/6/17.
  */
@@ -14,7 +18,8 @@ public class UserInfo {
   private int service;
   private String id;
   private String avatar;
-
+  SharedPreferences.Editor save_cach;
+  SharedPreferences read_cach;
   private UserInfo user;
 
   private static UserInfo mInstance = null;
@@ -35,6 +40,22 @@ public class UserInfo {
       mInstance = new UserInfo();
     }
     return mInstance;
+  }
+
+  public void saveCach(Context context) {
+    save_cach = context.getSharedPreferences(Config.USER_INFO, Context.MODE_PRIVATE).edit();
+    save_cach.putString(Config.USER_NAME, user_name);
+    save_cach.putString(Config.USER_EMAIL, user_email);
+    save_cach.putString(Config.USER_BDAY, user_bday);
+    save_cach.putString(Config.USER_PFILE, avatar);
+    save_cach.commit();
+  }
+
+  public void readCach(Context context) {
+    read_cach = context.getSharedPreferences(Config.USER_INFO, Context.MODE_PRIVATE);
+    user_name = read_cach.getString(Config.USER_NAME, "NONE");
+    user_email = read_cach.getString(Config.USER_EMAIL, "NONE");
+    user_bday = read_cach.getString(Config.USER_BDAY, "NONE");
   }
 
   //Setters

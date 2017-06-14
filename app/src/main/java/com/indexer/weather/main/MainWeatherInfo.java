@@ -1,7 +1,8 @@
 package com.indexer.weather.main;
 
 import android.support.annotation.NonNull;
-import com.indexer.weather.model.WeatherData;
+import com.indexer.weather.model.ForecastReturnObject;
+import com.indexer.weather.model.UserInfo;
 import com.indexer.weather.rest.RestClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -13,6 +14,7 @@ import retrofit2.Response;
 
 public class MainWeatherInfo implements MainPresenter {
   private MainView mainView;
+  private UserInfo mUserInfo;
 
   MainWeatherInfo(MainView loginView) {
     this.mainView = loginView;
@@ -20,23 +22,26 @@ public class MainWeatherInfo implements MainPresenter {
 
   @Override public void signOut(MainActivity mainActivity) {
     mainView.updateProfile(null);
+    mUserInfo = UserInfo.getInstance();
+    mUserInfo.saveCach(mainActivity.getContext());
   }
 
   @Override public void getWeatherToday(final MainActivity mainActivity) {
-    //13.736717, 100.523186
-    Call<WeatherData> weatherReturnObjectCall =
+
+    Call<ForecastReturnObject> weatherReturnObjectCall =
         RestClient.getService(mainActivity)
-            .getWeatherForLocation(13.736717, 100.523186);
-    weatherReturnObjectCall.enqueue(new Callback<WeatherData>() {
+            .getWeatherForecastLocation(13.736717, 100.523186, 1);
+    weatherReturnObjectCall.enqueue(new Callback<ForecastReturnObject>() {
       @Override
-      public void onResponse(@NonNull Call<WeatherData> call,
-          @NonNull Response<WeatherData> response) {
+      public void onResponse(@NonNull Call<ForecastReturnObject> call,
+          @NonNull Response<ForecastReturnObject> response) {
         if (response.isSuccessful()) {
           mainView.updateHeader(response.body());
         }
       }
 
-      @Override public void onFailure(@NonNull Call<WeatherData> call, @NonNull Throwable t) {
+      @Override
+      public void onFailure(@NonNull Call<ForecastReturnObject> call, @NonNull Throwable t) {
         mainView.updateHeader(null);
       }
     });
