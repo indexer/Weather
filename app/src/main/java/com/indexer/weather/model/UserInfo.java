@@ -2,6 +2,7 @@ package com.indexer.weather.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import com.indexer.weather.base.Config;
 
 /**
@@ -14,8 +15,6 @@ public class UserInfo {
   private String user_email;
   private String user_name;
   private String user_bday;
-  private int login_status;
-  private int service;
   private String id;
   private String avatar;
   SharedPreferences.Editor save_cach;
@@ -71,14 +70,6 @@ public class UserInfo {
     this.user_bday = bday;
   }
 
-  public void setLogin_status(int login_status) {
-    this.login_status = login_status;
-  }
-
-  public void setService(int service) {
-    this.service = service;
-  }
-
   public void setId(String id) {
     this.id = id;
   }
@@ -90,18 +81,6 @@ public class UserInfo {
 
   public String getUser_name() {
     return user_name;
-  }
-
-  public String getUser_bday() {
-    return user_bday;
-  }
-
-  public int getLogin_status() {
-    return login_status;
-  }
-
-  public int getService() {
-    return service;
   }
 
   public String getId() {

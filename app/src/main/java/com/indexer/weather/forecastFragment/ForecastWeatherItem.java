@@ -21,9 +21,9 @@ import retrofit2.Response;
  */
 
 public class ForecastWeatherItem implements ForecastWeatherPresenter {
-  ForecastWeatherView forecastWeatherItemView;
-  long dateTime;
-  ArrayList<Weather> weatherArrayList = new ArrayList<>();
+  private ForecastWeatherView forecastWeatherItemView;
+  private long dateTime;
+  private ArrayList<Weather> weatherArrayList = new ArrayList<>();
 
   public ForecastWeatherItem(ForecastWeatherView forecastWeatherItemView) {
     this.forecastWeatherItemView = forecastWeatherItemView;
@@ -68,14 +68,18 @@ public class ForecastWeatherItem implements ForecastWeatherPresenter {
           int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
           // now we work exclusively in UTC
           dayTime = new Time();
-          for (int i = 0; i < response.body().getList().size(); i++) {
+          int i = 0;
+          while (i < response.body().getList().size()) {
             Weather mWeather;
-            mWeather = (Weather) response.body().getList().get(i).getWeather().get(0);
+            mWeather = response.body().getList().get(i).getWeather().get(0);
             dateTime = dayTime.setJulianDay(julianStartDay + i);
             mWeather.date = dateTime;
+            mWeather.city = response.body().getCity().getName();
+            mWeather.temp = response.body().getList().get(i).getTemp().getDay();
             mWeather.humidity = response.body().getList().get(i).getHumidity();
             mWeather.speed = response.body().getList().get(i).getSpeed();
             weatherArrayList.add(mWeather);
+            i++;
           }
           forecastWeatherItemView.getWeatherList(weatherArrayList);
         }

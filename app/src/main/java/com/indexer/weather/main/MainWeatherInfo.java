@@ -8,6 +8,7 @@ import com.indexer.weather.base.Config;
 import com.indexer.weather.base.Utils;
 import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
+import com.indexer.weather.model.Weather;
 import com.indexer.weather.rest.RestClient;
 import java.net.UnknownHostException;
 import javax.net.ssl.SSLHandshakeException;
@@ -48,6 +49,14 @@ public class MainWeatherInfo implements MainPresenter {
       public void onResponse(@NonNull Call<ForecastReturnObject> call,
           @NonNull Response<ForecastReturnObject> response) {
         if (response.isSuccessful()) {
+          Weather mWeather;
+          mWeather = response.body().getList().get(0).getWeather().get(0);
+          mWeather.temp = response.body().getList().get(0).getTemp().getDay();
+          mWeather.speed = response.body().getList().get(0).getSpeed();
+          mWeather.humidity = response.body().getList().get(0).getHumidity();
+          mWeather.degree =response.body().getList().get(0).getDeg();
+          mWeather.date =response.body().getList().get(0).getDt();
+          //mWeather.saveWeatherCach(mainActivity.getContext());
           mainView.updateHeader(response.body());
         }
       }

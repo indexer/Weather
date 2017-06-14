@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import com.google.android.gms.common.SignInButton;
 import com.indexer.weather.R;
 import com.indexer.weather.base.BaseActivity;
+import com.indexer.weather.base.Config;
 import com.indexer.weather.base.Utils;
 import com.indexer.weather.forecastFragment.ForecastFragment;
 import com.indexer.weather.forecastWeatherFragment.ForecastWeatherFragment;
@@ -89,6 +90,11 @@ public class MainActivity extends BaseActivity
     mainWeatherInfo.getWeatherToday(this);
     signInGooglePresenter.createGoogleClient(this);
     initComponents();
+    mUserInfo = UserInfo.getInstance();
+    mUserInfo.readCach(this);
+    if (mUserInfo != null) {
+      showAlreadyUser(mUserInfo);
+    }
   }
 
   @Override protected void onResume() {
@@ -135,13 +141,7 @@ public class MainActivity extends BaseActivity
         signInGooglePresenter.signIn(MainActivity.this);
       }
     });
-    mUserInfo = UserInfo.getInstance();
-    mUserInfo.readCach(this);
-    if (mUserInfo.getUser_name().equals("NONE")) {
-      getmDrawerLayout.openDrawer(Gravity.START);
-    } else {
-      showAlreadyUser(mUserInfo);
-    }
+
     navigationView.setNavigationItemSelectedListener(this);
   }
 
@@ -174,14 +174,21 @@ public class MainActivity extends BaseActivity
   }
 
   public void showAlreadyUser(UserInfo UserInfo) {
-    CircleImageView drawerImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
-    Picasso.with(this).load(UserInfo.getAvatarURL()).into(drawerImage);
-    mUserName.setText(UserInfo.getUser_name());
-    mUserEmail.setText(UserInfo.getUser_email());
-    view_container.setVisibility(View.VISIBLE);
-    getmButtonGoogleSignIn.setVisibility(View.GONE);
     nav_Menu = navigationView.getMenu();
-    nav_Menu.findItem(R.id.navigation_sub_item_logout).setVisible(true);
+
+    if (UserInfo.getUser_name().equals("NONE")) {
+      getmButtonGoogleSignIn.setVisibility(View.VISIBLE);
+      getmDrawerLayout.openDrawer(Gravity.START);
+      nav_Menu.findItem(R.id.navigation_sub_item_logout).setVisible(false);
+    } else {
+      CircleImageView drawerImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
+      Picasso.with(this).load(UserInfo.getAvatarURL()).into(drawerImage);
+      mUserName.setText(UserInfo.getUser_name());
+      mUserEmail.setText(UserInfo.getUser_email());
+      view_container.setVisibility(View.VISIBLE);
+      getmButtonGoogleSignIn.setVisibility(View.GONE);
+      nav_Menu.findItem(R.id.navigation_sub_item_logout).setVisible(true);
+    }
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -232,6 +239,11 @@ public class MainActivity extends BaseActivity
               weatherData.getList().get(0).getWeather().get(0).icon);
       Picasso.with(this).load(webIcon).into(imageView);
     }
+  }
+
+  @Override public void onBackPressed() {
+    super.onBackPressed();
+    this.finish();
   }
 
   @Override public void updateProfile(UserInfo userInfo) {

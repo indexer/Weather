@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.indexer.weather.R;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 
 public class ForecastFragment extends Fragment implements ForecastWeatherView {
   @BindView(R.id.weather_forecast_list) RecyclerView mRecyclerView;
-  private ForecastWeatherItem forecastWeatherItem;
+  @BindView(R.id.m_Progress) ProgressBar mProgress;
 
   public ForecastFragment() {
     // Required empty public constructor
@@ -33,12 +34,14 @@ public class ForecastFragment extends Fragment implements ForecastWeatherView {
       @Nullable Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, v);
-    forecastWeatherItem = new ForecastWeatherItem(this);
+    ForecastWeatherItem forecastWeatherItem = new ForecastWeatherItem(this);
     forecastWeatherItem.getWeatherForecast(getActivity(), 5);
     return v;
   }
 
   @Override public void getWeatherList(ArrayList<Weather> forecastWeather) {
+    mProgress.setVisibility(View.GONE);
+    mRecyclerView.setVisibility(View.VISIBLE);
     WeatherForecastAdapter mWeatherForecastAdapter = new WeatherForecastAdapter();
     mWeatherForecastAdapter.setItems(forecastWeather);
     mRecyclerView.setAdapter(mWeatherForecastAdapter);
