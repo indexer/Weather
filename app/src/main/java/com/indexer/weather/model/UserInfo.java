@@ -20,7 +20,6 @@ public class UserInfo {
   private String avatar;
   SharedPreferences.Editor save_cach;
   SharedPreferences read_cach;
-  private UserInfo user;
 
   private static UserInfo mInstance = null;
 
@@ -56,6 +55,7 @@ public class UserInfo {
     user_name = read_cach.getString(Config.USER_NAME, "NONE");
     user_email = read_cach.getString(Config.USER_EMAIL, "NONE");
     user_bday = read_cach.getString(Config.USER_BDAY, "NONE");
+    avatar = read_cach.getString(Config.USER_PFILE, "NONE");
   }
 
   //Setters

@@ -1,6 +1,9 @@
 package com.indexer.weather.main;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import com.indexer.weather.base.Config;
 import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
 import com.indexer.weather.rest.RestClient;
@@ -27,10 +30,15 @@ public class MainWeatherInfo implements MainPresenter {
   }
 
   @Override public void getWeatherToday(final MainActivity mainActivity) {
+    SharedPreferences mSharedPreferences = PreferenceManager.
+        getDefaultSharedPreferences(mainActivity.getContext());
+
+    float lat = mSharedPreferences.getFloat(Config.LAST_LATITUDE, 0);
+    float lng = mSharedPreferences.getFloat(Config.LAST_LONGITUDE, 0);
 
     Call<ForecastReturnObject> weatherReturnObjectCall =
         RestClient.getService(mainActivity)
-            .getWeatherForecastLocation(13.736717, 100.523186, 1);
+            .getWeatherForecastLocation(lat, lng, 1);
     weatherReturnObjectCall.enqueue(new Callback<ForecastReturnObject>() {
       @Override
       public void onResponse(@NonNull Call<ForecastReturnObject> call,
