@@ -13,6 +13,7 @@ public class Config {
   public static final String LOCATION_FORECAST = "/data/2.5/forecast/daily";
   public static final String API_KEY = "c439d507efe743e30d330569ee3ac15a";
   public final static String USER_INFO = "user_info";
+  public final static String no_internet="no_internet";
 
   //user's profile fields
   public static String USER_NAME = "user_name";

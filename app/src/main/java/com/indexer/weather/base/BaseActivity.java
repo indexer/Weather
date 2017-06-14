@@ -30,6 +30,7 @@ public abstract class BaseActivity extends AppCompatActivity
   public float mLongitude = 0;
   public SharedPreferences mSharedPreferences;
   private GoogleApiClient mGoogleApiClient;
+  public Boolean isConnected;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -39,6 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity
     EasyPermissions.requestPermissions(this, "NEED SMS PLZ", 1001,
         Manifest.permission.ACCESS_FINE_LOCATION);
     mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    isConnected = Utils.isNetworkAvaliable(this);
   }
 
   protected synchronized void buildGoogleApiClient() {

@@ -42,7 +42,6 @@ public class ForecastFragment extends Fragment implements ForecastWeatherView {
     WeatherForecastAdapter mWeatherForecastAdapter = new WeatherForecastAdapter();
     mWeatherForecastAdapter.setItems(forecastWeather);
     mRecyclerView.setAdapter(mWeatherForecastAdapter);
-    mWeatherForecastAdapter.notifyDataSetChanged();
     mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
   }
 }

@@ -10,6 +10,7 @@ public interface MainView {
 
   void updateProfile(UserInfo userInfo);
 
+
   Context getContext();
 }
 

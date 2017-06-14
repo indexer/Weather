@@ -1,13 +1,14 @@
 package com.indexer.weather.main;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,7 +22,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.google.android.gms.common.SignInButton;
@@ -37,6 +37,7 @@ import com.indexer.weather.social.GoogleSignInPresenter;
 import com.indexer.weather.social.LoginView;
 import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.List;
 
 public class MainActivity extends BaseActivity
     implements LoginView, MainView, NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +53,7 @@ public class MainActivity extends BaseActivity
   @BindView(R.id.weather_wind) TextView mWeatherWind;
   @BindView(R.id.weather_time) TextView mWeatherTime;
   @BindView(R.id.fragment_container) FrameLayout mFragmentContainer;
+  @BindView(R.id.m_coordinatorLayout) CoordinatorLayout coordinatorLayout;
   private GoogleSignInPresenter signInGooglePresenter;
   private MainWeatherInfo mainWeatherInfo;
   private Menu nav_Menu;
@@ -79,12 +81,39 @@ public class MainActivity extends BaseActivity
       drawerToggle.syncState();
     }
 
+    if (!isConnected) {
+      noInternetAction();
+    }
     //Google+
     signInGooglePresenter = new GoogleSignIn(this);
     mainWeatherInfo = new MainWeatherInfo(this);
     mainWeatherInfo.getWeatherToday(this);
     signInGooglePresenter.createGoogleClient(this);
     initComponents();
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    if (mainWeatherInfo != null && Utils.isNetworkAvaliable(this)) {
+      mainWeatherInfo.getWeatherToday(this);
+      initComponents();
+    } else {
+      noInternetAction();
+    }
+  }
+
+  private void noInternetAction() {
+    getmDrawerLayout.closeDrawer(Gravity.LEFT);
+    Snackbar snackbar = Snackbar
+        .make(coordinatorLayout, "There is no Network Connection", Snackbar.LENGTH_LONG)
+        .setAction("Open", new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+          }
+        });
+
+    snackbar.show();
   }
 
   @Override
@@ -216,6 +245,22 @@ public class MainActivity extends BaseActivity
     }
   }
 
+
+    /**/
+
+  public android.support.v4.app.Fragment getVisibleFragment() {
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    List<android.support.v4.app.Fragment> fragments = fragmentManager.getFragments();
+    if (fragments != null) {
+      for (android.support.v4.app.Fragment fragment : fragments) {
+        if (fragment != null && fragment.isVisible()) {
+          return fragment;
+        }
+      }
+    }
+    return null;
+  }
+
   @Override public Context getContext() {
     return this.getApplicationContext();
   }
@@ -229,17 +274,28 @@ public class MainActivity extends BaseActivity
       // Handle the home action
       mainWeatherInfo.signOut(this);
     } else if (id == R.id.navigation_sub_item_1) {
-
+      if (forecastFragment != getVisibleFragment()) {
+        android.support.v4.app.FragmentTransaction transaction =
+            getSupportFragmentManager().beginTransaction();
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(R.id.fragment_container, forecastFragment);
+        transaction.addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
+      }
     } else if (id == R.id.navigation_sub_item_2) {
       forecastWeatherFragment = new ForecastWeatherFragment();
-      android.support.v4.app.FragmentTransaction transaction =
-          getSupportFragmentManager().beginTransaction();
-      // Replace whatever is in the fragment_container view with this fragment,
-      // and add the transaction to the back stack so the user can navigate back
-      transaction.replace(R.id.fragment_container, forecastWeatherFragment);
-      transaction.addToBackStack(null);
-      // Commit the transaction
-      transaction.commit();
+      if (forecastWeatherFragment != getVisibleFragment()) {
+        android.support.v4.app.FragmentTransaction transaction =
+            getSupportFragmentManager().beginTransaction();
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(R.id.fragment_container, forecastWeatherFragment);
+        transaction.addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
+      }
     }
 
     getmDrawerLayout.closeDrawer(GravityCompat.START);

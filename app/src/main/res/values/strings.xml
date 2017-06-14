@@ -1,8 +1,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="app_name">Weather</string>
   <string name="sub_header_title">Weather Information:</string>
-  <string name="sub_menu_item">Current Weather Info</string>
-  <string name="sub_menu_item_predict">Weather Info for 5 days</string>
+  <string name="sub_menu_item">Current Weather Info for 5 days</string>
+  <string name="sub_menu_item_predict">Weather Info for 14 days</string>
   <string name="sub_menu_item_logout">Sign Out</string>
   <string name="drawer_open">open</string>
   <string name="drawer_close">close</string>

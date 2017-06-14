@@ -3,10 +3,14 @@ package com.indexer.weather.main;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import com.indexer.weather.base.Config;
+import com.indexer.weather.base.Utils;
 import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
 import com.indexer.weather.rest.RestClient;
+import java.net.UnknownHostException;
+import javax.net.ssl.SSLHandshakeException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,7 +42,7 @@ public class MainWeatherInfo implements MainPresenter {
 
     Call<ForecastReturnObject> weatherReturnObjectCall =
         RestClient.getService(mainActivity)
-            .getWeatherForecastLocation(lat, lng, 1,Config.unit);
+            .getWeatherForecastLocation(lat, lng, 1, Config.unit);
     weatherReturnObjectCall.enqueue(new Callback<ForecastReturnObject>() {
       @Override
       public void onResponse(@NonNull Call<ForecastReturnObject> call,
@@ -50,7 +54,17 @@ public class MainWeatherInfo implements MainPresenter {
 
       @Override
       public void onFailure(@NonNull Call<ForecastReturnObject> call, @NonNull Throwable t) {
-        mainView.updateHeader(null);
+        try {
+          throw (t.getCause());
+        } catch (UnknownHostException e) {
+          // unknown host
+        } catch (SSLHandshakeException e) {
+          // ssl handshake exception
+        } catch (Exception e) {
+          // unknown error
+        } catch (Throwable throwable) {
+          throwable.printStackTrace();
+        }
       }
     });
   }
@@ -76,6 +90,5 @@ public class MainWeatherInfo implements MainPresenter {
   }
 
   @Override public void onError(String message) {
-
   }
 }
