@@ -7,11 +7,12 @@ package com.indexer.weather.forecastFragment;
 import android.content.Context;
 
 import com.indexer.weather.model.List;
+import com.indexer.weather.model.Weather;
 import java.util.ArrayList;
 
 public interface ForecastWeatherView {
 
-  void getWeatherList(ArrayList<List> forecastWeather);
+  void getWeatherList(ArrayList<Weather> forecastWeather);
 
   Context getContext();
 }

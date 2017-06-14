@@ -17,4 +17,9 @@ public class Weather {
   @SerializedName("icon")
   @Expose
   public String icon;
+  public long date;
+  public Double speed;
+  public float degree;
+  public Double temp;
+  public Integer humidity;
 }

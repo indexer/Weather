@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.indexer.weather.R;
 import com.indexer.weather.adapter.WeatherForecastAdapter;
+import com.indexer.weather.model.Weather;
 import java.util.ArrayList;
 
 /**
@@ -37,7 +38,7 @@ public class ForecastFragment extends Fragment implements ForecastWeatherView {
     return v;
   }
 
-  @Override public void getWeatherList(ArrayList<com.indexer.weather.model.List> forecastWeather) {
+  @Override public void getWeatherList(ArrayList<Weather> forecastWeather) {
     WeatherForecastAdapter mWeatherForecastAdapter = new WeatherForecastAdapter();
     mWeatherForecastAdapter.setItems(forecastWeather);
     mRecyclerView.setAdapter(mWeatherForecastAdapter);

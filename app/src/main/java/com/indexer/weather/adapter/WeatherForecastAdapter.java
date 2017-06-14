@@ -6,12 +6,13 @@ import android.view.ViewGroup;
 import com.indexer.weather.R;
 import com.indexer.weather.base.BaseAdapter;
 import com.indexer.weather.model.List;
+import com.indexer.weather.model.Weather;
 
 /**
  * Created by indexer on 14/6/17.
  */
 
-public class WeatherForecastAdapter extends BaseAdapter<WeatherItemView, List> {
+public class WeatherForecastAdapter extends BaseAdapter<WeatherItemView, Weather> {
   @Override public WeatherItemView onCreateViewHolder(ViewGroup parent, int
       viewType) {
     View view =
@@ -20,6 +21,6 @@ public class WeatherForecastAdapter extends BaseAdapter<WeatherItemView, List> {
   }
 
   @Override public void onBindViewHolder(WeatherItemView holder, int position) {
-    holder.onBind(mItems.get(position).getWeather().get(0), position);
+    holder.onBind(mItems.get(position), position);
   }
 }

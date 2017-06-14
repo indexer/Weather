@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="16dp"
     android:layout_width="match_parent"
     android:layout_height="48dp">
+
+  <ImageView
+      android:contentDescription="@string/cloudy"
+      android:scaleType="centerCrop"
+      android:src="@mipmap/ic_launcher"
+      android:id="@+id/item_image"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"/>
 
   <TextView
       android:text="TODAY"
@@ -11,15 +23,22 @@
       android:id="@+id/weather_date"
       android:fontFamily="sans-serif-condensed"
       android:textAppearance="?android:textAppearanceSmall"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toTopOf="@+id/item_image"
+      app:layout_constraintStart_toEndOf="@+id/item_image"
+      app:layout_constraintEnd_toEndOf="parent"/>
 
   <TextView
       android:text="@string/cloudy"
       android:id="@+id/weather_description"
       android:fontFamily="sans-serif-condensed"
       android:textAppearance="?android:textAppearanceSmall"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toBottomOf="@+id/weather_date"
+      app:layout_constraintStart_toEndOf="@+id/item_image"
+      app:layout_constraintEnd_toEndOf="parent"/>
 
-</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

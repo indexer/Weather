@@ -1,19 +1,23 @@
 package com.indexer.weather.adapter;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.indexer.weather.R;
 import com.indexer.weather.base.BaseViewHolder;
+import com.indexer.weather.base.Utils;
 import com.indexer.weather.model.Weather;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by indexer on 22/5/17.
  */
 
 public class WeatherItemView extends BaseViewHolder {
+  @BindView(R.id.item_image) ImageView itemImage;
   @BindView(R.id.weather_date) TextView mWeaterText;
   @BindView(R.id.weather_description) TextView getmWeaterText;
 
@@ -27,7 +31,11 @@ public class WeatherItemView extends BaseViewHolder {
   }
 
   public void onBind(Weather weather, int position) {
-    mWeaterText.setText(weather.main);
-    getmWeaterText.setText(weather.description);
+    mWeaterText.setText(Utils.getFriendlyDayString(itemView.getContext(), weather.date));
+    getmWeaterText.setText(weather.main + "/" + weather.description);
+    String webIcon =
+        String.format("http://openweathermap.org/img/w/%s.png",
+            weather.icon);
+    Picasso.with(itemView.getContext()).load(webIcon).into(itemImage);
   }
 }

@@ -2,6 +2,7 @@ package com.indexer.weather.base;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+import com.indexer.weather.model.Weather;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public abstract class BaseAdapter<VH extends BaseViewHolder, T> extends Recycler
   /**
    * @param items new array list for adapter
    */
-  public void setItems(List<com.indexer.weather.model.List> items) {
+  public void setItems(List<Weather> items) {
     this.mItems = (List<T>) items;
     notifyDataSetChanged();
   }
