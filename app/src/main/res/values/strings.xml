@@ -14,6 +14,7 @@
   <string name="time">Time</string>
   <string name="today">Today</string>
   <string name="tomorrow">Tomorrow</string>
+  <string name="greeting">Have a Nice Day, Don\'t forget to take Umbrella when going out</string>
   <string name="format_wind_mph">Wind: <xliff:g id="speed">%1$1.0f</xliff:g> mph
     <xliff:g id="direction">%2$s</xliff:g>
   </string>

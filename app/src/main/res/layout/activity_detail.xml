@@ -106,4 +106,12 @@
     </RelativeLayout>
 
   </android.support.design.widget.AppBarLayout>
+  <TextView
+      android:gravity="center"
+      android:layout_centerInParent="true"
+      android:textColor="#000"
+      android:text="@string/greeting"
+      android:fontFamily="sans-serif"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
 </RelativeLayout>

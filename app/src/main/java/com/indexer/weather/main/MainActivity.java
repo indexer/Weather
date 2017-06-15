@@ -95,7 +95,6 @@ public class MainActivity extends BaseActivity
     }
     //Google+
     signInGooglePresenter = new GoogleSignIn(this);
-
     signInGooglePresenter.createGoogleClient(this);
     initComponents();
     mUserInfo = UserInfo.getInstance();
@@ -111,8 +110,8 @@ public class MainActivity extends BaseActivity
 
   @Override protected void onResume() {
     super.onResume();
+    mainWeatherInfo = new MainWeatherInfo(this);
     if (Utils.isNetworkAvaliable(this)) {
-      mainWeatherInfo = new MainWeatherInfo(this);
       mainWeatherInfo.getWeatherToday(this);
       initComponents();
     } else {

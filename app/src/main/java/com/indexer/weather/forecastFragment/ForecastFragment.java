@@ -1,11 +1,15 @@
 package com.indexer.weather.forecastFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +29,8 @@ import java.util.ArrayList;
 public class ForecastFragment extends Fragment implements ForecastWeatherView {
   @BindView(R.id.weather_forecast_list) RecyclerView mRecyclerView;
   @BindView(R.id.m_Progress) ProgressBar mProgress;
+  ForecastWeatherItem forecastWeatherItem;
+  @BindView(R.id.m_coordinatorLayout) CoordinatorLayout coordinatorLayout;
 
   public ForecastFragment() {
     // Required empty public constructor
@@ -33,12 +39,27 @@ public class ForecastFragment extends Fragment implements ForecastWeatherView {
   @Override public void onResume() {
     super.onResume();
     if (Utils.isNetworkAvaliable(getActivity())) {
-      ForecastWeatherItem forecastWeatherItem =
+      forecastWeatherItem =
           new ForecastWeatherItem(this);
       forecastWeatherItem.getWeatherForecast(getActivity(), 5);
     } else {
       getWeatherList(null);
+      noInternetAction();
     }
+  }
+
+  private void noInternetAction() {
+
+    Snackbar snackbar = Snackbar
+        .make(coordinatorLayout, "There is no Network Connection", Snackbar.LENGTH_LONG)
+        .setAction("Open", new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+          }
+        });
+
+    snackbar.show();
   }
 
   @Nullable @Override
@@ -49,6 +70,10 @@ public class ForecastFragment extends Fragment implements ForecastWeatherView {
     if (!Utils.isNetworkAvaliable(getActivity())) {
       mProgress.setVisibility(View.GONE);
       mRecyclerView.setVisibility(View.GONE);
+      noInternetAction();
+    } else {
+      forecastWeatherItem = new ForecastWeatherItem(this);
+      forecastWeatherItem.getWeatherForecast(getActivity(), 5);
     }
     return v;
   }

@@ -1,7 +1,10 @@
 package com.indexer.weather.forecastWeatherFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +30,7 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
   @BindView(R.id.weather_forecast_list) RecyclerView mRecyclerView;
   private ForecastWeatherItem forecastWeatherItem;
   @BindView(R.id.m_Progress) ProgressBar mProgress;
+  @BindView(R.id.m_coordinatorLayout) CoordinatorLayout coordinatorLayout;
 
   public ForecastWeatherFragment() {
     // Required empty public constructor
@@ -35,12 +39,25 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
   @Override public void onResume() {
     super.onResume();
     if (Utils.isNetworkAvaliable(getActivity())) {
-      ForecastWeatherItem forecastWeatherItem =
+      forecastWeatherItem =
           new ForecastWeatherItem(this);
       forecastWeatherItem.getWeatherForecast(getActivity(), 5);
     } else {
       getWeatherList(null);
+      noInternetAction();
     }
+  }
+
+  private void noInternetAction() {
+    Snackbar snackbar = Snackbar
+        .make(coordinatorLayout, "There is no Network Connection", Snackbar.LENGTH_LONG)
+        .setAction("Open", new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+          }
+        });
+    snackbar.show();
   }
 
   @Nullable @Override
@@ -50,6 +67,11 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
     ButterKnife.bind(this, v);
     forecastWeatherItem = new ForecastWeatherItem(this);
     forecastWeatherItem.getWeatherForecast(getActivity(), 14);
+    if (!Utils.isNetworkAvaliable(getActivity())) {
+      mProgress.setVisibility(View.GONE);
+      mRecyclerView.setVisibility(View.GONE);
+      noInternetAction();
+    }
     return v;
   }
 
