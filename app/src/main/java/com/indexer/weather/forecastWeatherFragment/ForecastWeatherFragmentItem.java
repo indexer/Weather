@@ -92,10 +92,7 @@ public class ForecastWeatherFragmentItem implements ForecastWeatherFragmentPrese
       public void onFailure(@NonNull Call<ForecastReturnObject> call, @NonNull Throwable t) {
         try {
           throw (t.getCause());
-        } catch (SocketTimeoutException sock) {
-          forecastWeatherItemView.getWeatherList(null);
-        } catch (UnknownHostException e) {
-          // unknown host
+        } catch (SocketTimeoutException | UnknownHostException sock) {
           forecastWeatherItemView.getWeatherList(null);
         } catch (SSLHandshakeException e) {
           // ssl handshake exception

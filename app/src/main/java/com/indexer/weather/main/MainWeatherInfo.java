@@ -60,7 +60,6 @@ public class MainWeatherInfo implements MainPresenter {
           mWeather.degree = response.body().getList().get(0).getDeg();
           mWeather.city = response.body().getCity().getName();
           mWeather.date = response.body().getList().get(0).getDt();
-
           mainView.updateHeader(mWeather);
         }
       }

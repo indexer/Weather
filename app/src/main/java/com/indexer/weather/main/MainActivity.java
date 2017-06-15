@@ -119,6 +119,7 @@ public class MainActivity extends BaseActivity
       mainWeatherInfo.getWeatherToday(this);
       initComponents();
     } else {
+      getView_container.setVisibility(View.GONE);
       noInternetAction();
     }
   }
@@ -255,6 +256,7 @@ public class MainActivity extends BaseActivity
       ACache mCache = ACache.get(this);
       mCache.put(Config.weather_cache, weatherData, ACache.TIME_DAY);
     } else {
+      getView_container.setVisibility(View.GONE);
       ACache mCache = ACache.get(this);
       Weather value = (Weather) mCache.getAsObject(Config.weather_cache);
       if (value != null) {

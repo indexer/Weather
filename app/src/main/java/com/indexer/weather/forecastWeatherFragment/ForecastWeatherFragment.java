@@ -36,9 +36,15 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
   @BindView(R.id.m_coordinatorLayout) CoordinatorLayout coordinatorLayout;
   ACache mCache;
   ArrayList<Weather> mList = new ArrayList<>();
+  WeatherForecastAdapter mWeatherForecastAdapter;
 
   public ForecastWeatherFragment() {
     // Required empty public constructor
+  }
+
+  @Override public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    mWeatherForecastAdapter = new WeatherForecastAdapter();
   }
 
   @Override public void onResume() {
@@ -46,8 +52,6 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
     if (Utils.isNetworkAvaliable(getActivity())) {
       forecastWeatherFragmentItem = new ForecastWeatherFragmentItem(this);
       forecastWeatherFragmentItem.getWeatherForecast(getActivity(), 14);
-    } else {
-      noInternetAction();
     }
   }
 
@@ -69,16 +73,21 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
     View v = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, v);
     mCache = ACache.get(getActivity());
+    LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+    llm.setOrientation(LinearLayoutManager.VERTICAL);
+    mRecyclerView.setLayoutManager(llm);
+    mRecyclerView.setAdapter(mWeatherForecastAdapter);
+    mRecyclerView.setHasFixedSize(true);
     if (!Utils.isNetworkAvaliable(getActivity())) {
       mProgress.setVisibility(View.GONE);
       noInternetAction();
       List<Weather> testObject = mCache.getAsObjectList(Config.weather_list, Weather.class);
-      mList.addAll(testObject);
-      WeatherForecastAdapter mWeatherForecastAdapter = new WeatherForecastAdapter();
-      mWeatherForecastAdapter.setItems(mList);
-      mRecyclerView.setAdapter(mWeatherForecastAdapter);
-      mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-      mWeatherForecastAdapter.notifyDataSetChanged();
+      if (testObject != null) {
+        mList.addAll(testObject);
+        mWeatherForecastAdapter.setItems(mList);
+        mRecyclerView.setAdapter(mWeatherForecastAdapter);
+        mWeatherForecastAdapter.notifyDataSetChanged();
+      }
     }
     return v;
   }
@@ -87,13 +96,9 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
     if (forecastWeather != null) {
       mProgress.setVisibility(View.GONE);
       mRecyclerView.setVisibility(View.VISIBLE);
-      WeatherForecastAdapter mWeatherForecastAdapter = new WeatherForecastAdapter();
       mWeatherForecastAdapter.setItems(forecastWeather);
-
       mCache.put(Config.weather_list, (Serializable) forecastWeather);
-      mRecyclerView.setAdapter(mWeatherForecastAdapter);
       mWeatherForecastAdapter.notifyDataSetChanged();
-      mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     } else {
       mProgress.setVisibility(View.GONE);
       mRecyclerView.setVisibility(View.GONE);

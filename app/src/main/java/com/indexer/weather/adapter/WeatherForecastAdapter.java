@@ -20,6 +20,10 @@ public class WeatherForecastAdapter extends BaseAdapter<WeatherItemView, Weather
     return new WeatherItemView(view, null);
   }
 
+  @Override public int getItemCount() {
+    return super.getItemCount();
+  }
+
   @Override public void onBindViewHolder(WeatherItemView holder, int position) {
     holder.onBind(mItems.get(position), position);
   }
