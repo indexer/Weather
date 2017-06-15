@@ -1,15 +1,10 @@
 package com.indexer.weather.model;
 
-import android.content.SharedPreferences;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Weather implements Serializable {
-  SharedPreferences.Editor save_cach;
-  SharedPreferences read_cach;
-
-  private static Weather mInstance = null;
 
   private Weather() {
   }

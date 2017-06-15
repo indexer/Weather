@@ -52,6 +52,7 @@ dependencies {
   annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
   implementation 'com.android.support:appcompat-v7:25.4.0'
   testImplementation 'junit:junit:4.12'
+  compile 'org.afinal.simplecache:a-simple-cache:1.0'
   compile 'com.google.android.gms:play-services:11.0.0'
   compile "com.android.support:design:25.4.0"
   compile 'com.squareup.retrofit2:retrofit:2.3.0'

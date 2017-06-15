@@ -23,7 +23,7 @@ import retrofit2.Response;
  * Created by indexer on 13/6/17.
  */
 
-public class ForecastWeatherFragmentItem implements ForecastWeatherPresenter {
+public class ForecastWeatherFragmentItem implements ForecastWeatherFragmentPresenter {
   private ForecastWeatherFragmentView forecastWeatherItemView;
   private long dateTime;
   private ArrayList<Weather> weatherArrayList = new ArrayList<>();

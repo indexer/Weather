@@ -8,6 +8,7 @@ import android.text.format.Time;
 import android.util.Log;
 import com.indexer.weather.base.Config;
 import com.indexer.weather.base.Utils;
+import com.indexer.weather.model.Coord;
 import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
 import com.indexer.weather.model.Weather;
@@ -16,6 +17,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
 import javax.net.ssl.SSLHandshakeException;
+import org.afinal.simplecache.ACache;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,7 +60,7 @@ public class MainWeatherInfo implements MainPresenter {
           mWeather.degree = response.body().getList().get(0).getDeg();
           mWeather.city = response.body().getCity().getName();
           mWeather.date = response.body().getList().get(0).getDt();
-          Log.e("On Resume", "resume");
+
           mainView.updateHeader(mWeather);
         }
       }

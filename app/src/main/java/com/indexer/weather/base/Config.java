@@ -26,14 +26,7 @@ public class Config {
   public static String unit = "metric";
 
   //weather cache
-  public static String USER_CITY = "user_city";
-  public static String USER_CITY_TEMP = "user_city_temp";
-  public static String USER_HUMIDITY = "user_email";
-  public static String USER_SPEED = "user_profile";
-  public static String USER_DATE = "user_date";
-  public static String USER_ICON = "icon";
-  public static String USER_DESCRIPTION = "description";
-  public static String USER_MAIN = "main";
-  public static String USER_DEGREE = "degree";
+  public static String weather_cache = "weather";
+  public static String weather_list="weather_list";
 }
 

@@ -15,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +41,7 @@ import com.indexer.weather.social.LoginView;
 import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 import java.util.List;
+import org.afinal.simplecache.ACache;
 
 public class MainActivity extends BaseActivity
     implements LoginView, MainView, NavigationView.OnNavigationItemSelectedListener {
@@ -91,6 +93,9 @@ public class MainActivity extends BaseActivity
 
     if (!isConnected) {
       noInternetAction();
+      /*ACache mCache = ACache.get(this);
+      Weather value = (Weather) mCache.getAsObject(Config.weather_cache);
+      Log.e("value", "current" + value.main);*/
     }
     //Google+
     signInGooglePresenter = new GoogleSignIn(this);
@@ -247,8 +252,14 @@ public class MainActivity extends BaseActivity
           String.format("http://openweathermap.org/img/w/%s.png",
               weatherData.icon);
       Picasso.with(this).load(webIcon).into(imageView);
+      ACache mCache = ACache.get(this);
+      mCache.put(Config.weather_cache, weatherData, ACache.TIME_DAY);
     } else {
-      getView_container.setVisibility(View.GONE);
+      ACache mCache = ACache.get(this);
+      Weather value = (Weather) mCache.getAsObject(Config.weather_cache);
+      if (value != null) {
+        updateHeader(value);
+      }
     }
   }
 
