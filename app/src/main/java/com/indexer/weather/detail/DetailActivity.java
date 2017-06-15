@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -63,6 +64,14 @@ public class DetailActivity extends BaseActivity {
               mWeather.icon);
       Picasso.with(this).load(webIcon).into(imageView);
     }
+  }
+
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        finish();
+    }
+    return (super.onOptionsItemSelected(item));
   }
 
   @Override protected boolean needToolbar() {

@@ -2,6 +2,7 @@ package com.indexer.weather.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,8 +31,8 @@ import com.indexer.weather.base.Config;
 import com.indexer.weather.base.Utils;
 import com.indexer.weather.forecastFragment.ForecastFragment;
 import com.indexer.weather.forecastWeatherFragment.ForecastWeatherFragment;
-import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
+import com.indexer.weather.model.Weather;
 import com.indexer.weather.social.GoogleSignIn;
 import com.indexer.weather.social.GoogleSignInPresenter;
 import com.indexer.weather.social.LoginView;
@@ -54,6 +55,7 @@ public class MainActivity extends BaseActivity
   @BindView(R.id.weather_time) TextView mWeatherTime;
   @BindView(R.id.fragment_container) FrameLayout mFragmentContainer;
   @BindView(R.id.m_coordinatorLayout) CoordinatorLayout coordinatorLayout;
+  @BindView(R.id.navigation_header_container) RelativeLayout getView_container;
   private GoogleSignInPresenter signInGooglePresenter;
   private MainWeatherInfo mainWeatherInfo;
   private Menu nav_Menu;
@@ -64,6 +66,7 @@ public class MainActivity extends BaseActivity
   TextView mUserName;
   TextView mUserEmail;
   UserInfo mUserInfo;
+  Weather mWeatherInfo;
   RelativeLayout view_container;
   SignInButton getmButtonGoogleSignIn;
 
@@ -71,6 +74,7 @@ public class MainActivity extends BaseActivity
     super.onCreate(savedInstanceState);
     ButterKnife.bind(this);
     setSupportActionBar(mToolbar);
+
     if (getSupportActionBar() != null) {
       getSupportActionBar().setDisplayShowTitleEnabled(false);
       drawerToggle =
@@ -80,18 +84,26 @@ public class MainActivity extends BaseActivity
       getmDrawerLayout.addDrawerListener(drawerToggle);
       drawerToggle.syncState();
     }
+    forecastFragment = new ForecastFragment();
+    if (savedInstanceState == null) {
+      getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
+          forecastFragment).commit();
+    }
 
     if (!isConnected) {
       noInternetAction();
     }
     //Google+
     signInGooglePresenter = new GoogleSignIn(this);
-    mainWeatherInfo = new MainWeatherInfo(this);
-    mainWeatherInfo.getWeatherToday(this);
+
     signInGooglePresenter.createGoogleClient(this);
     initComponents();
     mUserInfo = UserInfo.getInstance();
-    mUserInfo.readCach(this);
+    try {
+      mUserInfo.readCach(this);
+    } catch (ClassCastException x) {
+      x.printStackTrace();
+    }
     if (mUserInfo != null) {
       showAlreadyUser(mUserInfo);
     }
@@ -99,7 +111,8 @@ public class MainActivity extends BaseActivity
 
   @Override protected void onResume() {
     super.onResume();
-    if (mainWeatherInfo != null && Utils.isNetworkAvaliable(this)) {
+    if (Utils.isNetworkAvaliable(this)) {
+      mainWeatherInfo = new MainWeatherInfo(this);
       mainWeatherInfo.getWeatherToday(this);
       initComponents();
     } else {
@@ -108,6 +121,7 @@ public class MainActivity extends BaseActivity
   }
 
   private void noInternetAction() {
+    updateHeader(null);
     getmDrawerLayout.closeDrawer(Gravity.START);
     Snackbar snackbar = Snackbar
         .make(coordinatorLayout, "There is no Network Connection", Snackbar.LENGTH_LONG)
@@ -127,9 +141,7 @@ public class MainActivity extends BaseActivity
   }
 
   public void initComponents() {
-    forecastFragment = new ForecastFragment();
-    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
-        forecastFragment).commit();
+
     headerView = navigationView.getHeaderView(0);
     mUserName = (TextView) headerView.findViewById(R.id.user_name);
     mUserEmail = (TextView) headerView.findViewById(R.id.user_email);
@@ -170,12 +182,10 @@ public class MainActivity extends BaseActivity
   @Override protected void onStart() {
     super.onStart();
     signInGooglePresenter.start();
-    mainWeatherInfo.start();
   }
 
   public void showAlreadyUser(UserInfo UserInfo) {
     nav_Menu = navigationView.getMenu();
-
     if (UserInfo.getUser_name().equals("NONE")) {
       getmButtonGoogleSignIn.setVisibility(View.VISIBLE);
       getmDrawerLayout.openDrawer(Gravity.START);
@@ -210,19 +220,20 @@ public class MainActivity extends BaseActivity
     }
   }
 
-  @Override public void updateHeader(ForecastReturnObject weatherData) {
+  @Override public void updateHeader(Weather weatherData) {
     if (weatherData != null) {
+      getView_container.setVisibility(View.VISIBLE);
       mTempTextView.setText(
           String.format("%sC",
-              Utils.formatTemperature(this, weatherData.getList().get(0).getTemp().getDay(),
+              Utils.formatTemperature(this, weatherData.temp,
                   true)));
-      mTextCityName.setText(weatherData.getCity().getName());
-      mWeatherDescription.setText(weatherData.getList().get(0).getWeather().get(0).description);
+      mTextCityName.setText(weatherData.city);
+      mWeatherDescription.setText(weatherData.description);
       mWeatherHumidity.setText(
-          Utils.getFormattedHumidity(this, weatherData.getList().get(0).getHumidity()));
+          Utils.getFormattedHumidity(this, weatherData.humidity));
       String getWindwithFormat =
-          Utils.getFormattedWind(this, weatherData.getList().get(0).getSpeed(),
-              weatherData.getList().get(0).getDeg());
+          Utils.getFormattedWind(this, weatherData.speed,
+              weatherData.degree);
       mWeatherWind.setText(getWindwithFormat);
       // format of the date
       //Today Time
@@ -236,8 +247,10 @@ public class MainActivity extends BaseActivity
       mWeatherTime.setText(Utils.getFriendlyDayString(this, dateTime));
       String webIcon =
           String.format("http://openweathermap.org/img/w/%s.png",
-              weatherData.getList().get(0).getWeather().get(0).icon);
+              weatherData.icon);
       Picasso.with(this).load(webIcon).into(imageView);
+    } else {
+      getView_container.setVisibility(View.GONE);
     }
   }
 
@@ -248,6 +261,8 @@ public class MainActivity extends BaseActivity
 
   @Override public void updateProfile(UserInfo userInfo) {
     if (userInfo == null) {
+      SharedPreferences preferences = getSharedPreferences(Config.USER_INFO, Context.MODE_PRIVATE);
+      preferences.edit().clear().commit();
       view_container.setVisibility(View.GONE);
       nav_Menu.findItem(R.id.navigation_sub_item_logout).setVisible(false);
       getmButtonGoogleSignIn.setVisibility(View.VISIBLE);

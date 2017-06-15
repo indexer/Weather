@@ -11,7 +11,10 @@ import com.indexer.weather.main.MainActivity;
 import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.Weather;
 import com.indexer.weather.rest.RestClient;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import javax.net.ssl.SSLHandshakeException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,7 +90,20 @@ public class ForecastWeatherItem implements ForecastWeatherPresenter {
 
       @Override
       public void onFailure(@NonNull Call<ForecastReturnObject> call, @NonNull Throwable t) {
-        Log.e("Responze error", "=" + t.getMessage());
+        try {
+          throw (t.getCause());
+        } catch (SocketTimeoutException sock) {
+          forecastWeatherItemView.getWeatherList(null);
+        } catch (UnknownHostException e) {
+          // unknown host
+          forecastWeatherItemView.getWeatherList(null);
+        } catch (SSLHandshakeException e) {
+          // ssl handshake exception
+        } catch (Exception e) {
+          // unknown error
+        } catch (Throwable throwable) {
+          throwable.printStackTrace();
+        }
       }
     });
   }

@@ -14,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.indexer.weather.R;
 import com.indexer.weather.adapter.WeatherForecastAdapter;
+import com.indexer.weather.base.Utils;
 import com.indexer.weather.model.Weather;
 import java.util.ArrayList;
 
@@ -29,22 +30,40 @@ public class ForecastFragment extends Fragment implements ForecastWeatherView {
     // Required empty public constructor
   }
 
+  @Override public void onResume() {
+    super.onResume();
+    if (Utils.isNetworkAvaliable(getActivity())) {
+      ForecastWeatherItem forecastWeatherItem =
+          new ForecastWeatherItem(this);
+      forecastWeatherItem.getWeatherForecast(getActivity(), 5);
+    } else {
+      getWeatherList(null);
+    }
+  }
+
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, v);
-    ForecastWeatherItem forecastWeatherItem = new ForecastWeatherItem(this);
-    forecastWeatherItem.getWeatherForecast(getActivity(), 5);
+    if (!Utils.isNetworkAvaliable(getActivity())) {
+      mProgress.setVisibility(View.GONE);
+      mRecyclerView.setVisibility(View.GONE);
+    }
     return v;
   }
 
   @Override public void getWeatherList(ArrayList<Weather> forecastWeather) {
-    mProgress.setVisibility(View.GONE);
-    mRecyclerView.setVisibility(View.VISIBLE);
-    WeatherForecastAdapter mWeatherForecastAdapter = new WeatherForecastAdapter();
-    mWeatherForecastAdapter.setItems(forecastWeather);
-    mRecyclerView.setAdapter(mWeatherForecastAdapter);
-    mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    if (forecastWeather != null) {
+      mProgress.setVisibility(View.GONE);
+      mRecyclerView.setVisibility(View.VISIBLE);
+      WeatherForecastAdapter mWeatherForecastAdapter = new WeatherForecastAdapter();
+      mWeatherForecastAdapter.setItems(forecastWeather);
+      mRecyclerView.setAdapter(mWeatherForecastAdapter);
+      mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    } else {
+      mRecyclerView.setVisibility(View.GONE);
+      mProgress.setVisibility(View.GONE);
+    }
   }
 }

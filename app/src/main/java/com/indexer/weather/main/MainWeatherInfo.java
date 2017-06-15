@@ -1,8 +1,10 @@
 package com.indexer.weather.main;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.text.format.Time;
 import android.util.Log;
 import com.indexer.weather.base.Config;
 import com.indexer.weather.base.Utils;
@@ -10,7 +12,9 @@ import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
 import com.indexer.weather.model.Weather;
 import com.indexer.weather.rest.RestClient;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.nio.channels.FileChannel;
 import javax.net.ssl.SSLHandshakeException;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,7 +26,6 @@ import retrofit2.Response;
 
 public class MainWeatherInfo implements MainPresenter {
   private MainView mainView;
-  private UserInfo mUserInfo;
 
   MainWeatherInfo(MainView loginView) {
     this.mainView = loginView;
@@ -30,8 +33,6 @@ public class MainWeatherInfo implements MainPresenter {
 
   @Override public void signOut(MainActivity mainActivity) {
     mainView.updateProfile(null);
-    mUserInfo = UserInfo.getInstance();
-    mUserInfo.saveCach(mainActivity.getContext());
   }
 
   @Override public void getWeatherToday(final MainActivity mainActivity) {
@@ -54,10 +55,11 @@ public class MainWeatherInfo implements MainPresenter {
           mWeather.temp = response.body().getList().get(0).getTemp().getDay();
           mWeather.speed = response.body().getList().get(0).getSpeed();
           mWeather.humidity = response.body().getList().get(0).getHumidity();
-          mWeather.degree =response.body().getList().get(0).getDeg();
-          mWeather.date =response.body().getList().get(0).getDt();
-          //mWeather.saveWeatherCach(mainActivity.getContext());
-          mainView.updateHeader(response.body());
+          mWeather.degree = response.body().getList().get(0).getDeg();
+          mWeather.city = response.body().getCity().getName();
+          mWeather.date = response.body().getList().get(0).getDt();
+          Log.e("On Resume", "resume");
+          mainView.updateHeader(mWeather);
         }
       }
 
@@ -65,8 +67,11 @@ public class MainWeatherInfo implements MainPresenter {
       public void onFailure(@NonNull Call<ForecastReturnObject> call, @NonNull Throwable t) {
         try {
           throw (t.getCause());
+        } catch (SocketTimeoutException sock) {
+          mainView.updateHeader(null);
         } catch (UnknownHostException e) {
           // unknown host
+          mainView.updateHeader(null);
         } catch (SSLHandshakeException e) {
           // ssl handshake exception
         } catch (Exception e) {

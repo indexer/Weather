@@ -2,7 +2,6 @@ package com.indexer.weather.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import com.indexer.weather.base.Config;
 
 /**
@@ -11,14 +10,11 @@ import com.indexer.weather.base.Config;
 
 public class UserInfo {
 
-  // private static  UserInfo userInstance = null;
   private String user_email;
   private String user_name;
   private String user_bday;
   private String id;
   private String avatar;
-  SharedPreferences.Editor save_cach;
-  SharedPreferences read_cach;
 
   private static UserInfo mInstance = null;
 
@@ -41,20 +37,22 @@ public class UserInfo {
   }
 
   public void saveCach(Context context) {
-    save_cach = context.getSharedPreferences(Config.USER_INFO, Context.MODE_PRIVATE).edit();
-    save_cach.putString(Config.USER_NAME, user_name);
-    save_cach.putString(Config.USER_EMAIL, user_email);
-    save_cach.putString(Config.USER_BDAY, user_bday);
-    save_cach.putString(Config.USER_PFILE, avatar);
-    save_cach.commit();
+    SharedPreferences.Editor saveCach =
+        context.getSharedPreferences(Config.USER_INFO, Context.MODE_PRIVATE).edit();
+    saveCach.putString(Config.USER_NAME, user_name);
+    saveCach.putString(Config.USER_EMAIL, user_email);
+    saveCach.putString(Config.USER_BDAY, user_bday);
+    saveCach.putString(Config.USER_PFILE, avatar);
+    saveCach.commit();
   }
 
   public void readCach(Context context) {
-    read_cach = context.getSharedPreferences(Config.USER_INFO, Context.MODE_PRIVATE);
-    user_name = read_cach.getString(Config.USER_NAME, "NONE");
-    user_email = read_cach.getString(Config.USER_EMAIL, "NONE");
-    user_bday = read_cach.getString(Config.USER_BDAY, "NONE");
-    avatar = read_cach.getString(Config.USER_PFILE, "NONE");
+    SharedPreferences readCach =
+        context.getSharedPreferences(Config.USER_INFO, Context.MODE_PRIVATE);
+    user_name = readCach.getString(Config.USER_NAME, "NONE");
+    user_email = readCach.getString(Config.USER_EMAIL, "NONE");
+    user_bday = readCach.getString(Config.USER_BDAY, "NONE");
+    avatar = readCach.getString(Config.USER_PFILE, "NONE");
   }
 
   //Setters
@@ -66,8 +64,8 @@ public class UserInfo {
     this.user_name = user_name;
   }
 
-  public void setBday(String bday) {
-    this.user_bday = bday;
+  public void setBday() {
+    this.user_bday = " ";
   }
 
   public void setId(String id) {

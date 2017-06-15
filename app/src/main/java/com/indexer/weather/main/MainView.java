@@ -1,12 +1,12 @@
 package com.indexer.weather.main;
 
 import android.content.Context;
-import com.indexer.weather.model.ForecastReturnObject;
 import com.indexer.weather.model.UserInfo;
+import com.indexer.weather.model.Weather;
 
 public interface MainView {
 
-  void updateHeader(ForecastReturnObject weatherData);
+  void updateHeader(Weather weatherData);
 
   void updateProfile(UserInfo userInfo);
 

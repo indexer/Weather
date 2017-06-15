@@ -80,9 +80,9 @@ public class GoogleSignIn implements GoogleSignInPresenter, GoogleApiClient.Conn
         if (personPhoto != null) {
           userModelSingleton.setAvatarURL(personPhoto.toString());
         }
-        userModelSingleton.setBday(" ");
-        userModelSingleton.saveCach(fieldLoginView.getContext());
+        userModelSingleton.setBday();
         fieldLoginView.updateUserProfile(userModelSingleton);
+        userModelSingleton.saveCach(fieldLoginView.getContext());
       }
     }
   }
