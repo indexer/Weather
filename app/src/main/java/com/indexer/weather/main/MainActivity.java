@@ -10,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -66,7 +67,6 @@ public class MainActivity extends BaseActivity
   TextView mUserName;
   TextView mUserEmail;
   UserInfo mUserInfo;
-  Weather mWeatherInfo;
   RelativeLayout view_container;
   SignInButton getmButtonGoogleSignIn;
 
@@ -85,10 +85,9 @@ public class MainActivity extends BaseActivity
       drawerToggle.syncState();
     }
     forecastFragment = new ForecastFragment();
-    if (savedInstanceState == null) {
-      getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
-          forecastFragment).commit();
-    }
+
+    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
+        forecastFragment).commit();
 
     if (!isConnected) {
       noInternetAction();
@@ -268,19 +267,6 @@ public class MainActivity extends BaseActivity
     }
   }
 
-  public android.support.v4.app.Fragment getVisibleFragment() {
-    FragmentManager fragmentManager = getSupportFragmentManager();
-    List<android.support.v4.app.Fragment> fragments = fragmentManager.getFragments();
-    if (fragments != null) {
-      for (android.support.v4.app.Fragment fragment : fragments) {
-        if (fragment != null && fragment.isVisible()) {
-          return fragment;
-        }
-      }
-    }
-    return null;
-  }
-
   @Override public Context getContext() {
     return this.getApplicationContext();
   }
@@ -288,37 +274,26 @@ public class MainActivity extends BaseActivity
   @Override
   public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
     // Handle navigation view item clicks here.
-    int id = menuItem.getItemId();
-    menuItem.setChecked(true);
-    if (id == R.id.navigation_sub_item_logout) {
-      // Handle the home action
-      mainWeatherInfo.signOut(this);
-    } else if (id == R.id.navigation_sub_item_1) {
-      if (forecastFragment != getVisibleFragment()) {
-        android.support.v4.app.FragmentTransaction transaction =
-            getSupportFragmentManager().beginTransaction();
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.fragment_container, forecastFragment);
-        transaction.addToBackStack(null);
-        // Commit the transaction
-        transaction.commit();
-      }
-    } else if (id == R.id.navigation_sub_item_2) {
-      forecastWeatherFragment = new ForecastWeatherFragment();
-      if (forecastWeatherFragment != getVisibleFragment()) {
-        android.support.v4.app.FragmentTransaction transaction =
-            getSupportFragmentManager().beginTransaction();
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.fragment_container, forecastWeatherFragment);
-        transaction.addToBackStack(null);
-        // Commit the transaction
-        transaction.commit();
-      }
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+    switch (menuItem.getItemId()) {
+      case R.id.navigation_sub_item_1:
+        forecastWeatherFragment = new ForecastWeatherFragment();
+        ft.replace(R.id.fragment_container, forecastFragment);
+        ft.commit();
+        getmDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+      case R.id.navigation_sub_item_2:
+        forecastWeatherFragment = new ForecastWeatherFragment();
+        ft.replace(R.id.fragment_container, forecastWeatherFragment);
+        ft.commit();
+        getmDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+      case R.id.navigation_sub_item_logout:
+        mainWeatherInfo.signOut(this);
+        return true;
+      default:
+        return true;
     }
-
-    getmDrawerLayout.closeDrawer(GravityCompat.START);
-    return true;
   }
 }

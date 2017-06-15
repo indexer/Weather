@@ -71,9 +71,6 @@ public class ForecastFragment extends Fragment implements ForecastWeatherView {
       mProgress.setVisibility(View.GONE);
       mRecyclerView.setVisibility(View.GONE);
       noInternetAction();
-    } else {
-      forecastWeatherItem = new ForecastWeatherItem(this);
-      forecastWeatherItem.getWeatherForecast(getActivity(), 5);
     }
     return v;
   }

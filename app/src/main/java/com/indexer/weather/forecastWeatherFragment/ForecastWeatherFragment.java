@@ -17,8 +17,6 @@ import butterknife.ButterKnife;
 import com.indexer.weather.R;
 import com.indexer.weather.adapter.WeatherForecastAdapter;
 import com.indexer.weather.base.Utils;
-import com.indexer.weather.forecastFragment.ForecastWeatherItem;
-import com.indexer.weather.forecastFragment.ForecastWeatherView;
 import com.indexer.weather.model.Weather;
 import java.util.ArrayList;
 
@@ -26,9 +24,9 @@ import java.util.ArrayList;
  * Created by indexer on 14/6/17.
  */
 
-public class ForecastWeatherFragment extends Fragment implements ForecastWeatherView {
+public class ForecastWeatherFragment extends Fragment implements ForecastWeatherFragmentView {
   @BindView(R.id.weather_forecast_list) RecyclerView mRecyclerView;
-  private ForecastWeatherItem forecastWeatherItem;
+  private ForecastWeatherFragmentItem forecastWeatherFragmentItem;
   @BindView(R.id.m_Progress) ProgressBar mProgress;
   @BindView(R.id.m_coordinatorLayout) CoordinatorLayout coordinatorLayout;
 
@@ -39,9 +37,8 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
   @Override public void onResume() {
     super.onResume();
     if (Utils.isNetworkAvaliable(getActivity())) {
-      forecastWeatherItem =
-          new ForecastWeatherItem(this);
-      forecastWeatherItem.getWeatherForecast(getActivity(), 5);
+      forecastWeatherFragmentItem = new ForecastWeatherFragmentItem(this);
+      forecastWeatherFragmentItem.getWeatherForecast(getActivity(), 14);
     } else {
       getWeatherList(null);
       noInternetAction();
@@ -65,8 +62,6 @@ public class ForecastWeatherFragment extends Fragment implements ForecastWeather
       @Nullable Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, v);
-    forecastWeatherItem = new ForecastWeatherItem(this);
-    forecastWeatherItem.getWeatherForecast(getActivity(), 14);
     if (!Utils.isNetworkAvaliable(getActivity())) {
       mProgress.setVisibility(View.GONE);
       mRecyclerView.setVisibility(View.GONE);
