@@ -2,9 +2,9 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="16dp"
+    android:background="?android:attr/selectableItemBackground"
     android:layout_width="match_parent"
-    android:layout_height="48dp">
+    android:layout_height="80dp">
 
   <ImageView
       android:contentDescription="@string/cloudy"
@@ -18,11 +18,11 @@
       app:layout_constraintBottom_toBottomOf="parent"/>
 
   <TextView
-      android:text="TODAY"
-      style="@style/TextAppearance.AppCompat.Subhead"
+      android:text="@string/today"
+      style="@style/TextAppearance.AppCompat.Title"
       android:id="@+id/weather_date"
       android:fontFamily="sans-serif-condensed"
-      android:textAppearance="?android:textAppearanceSmall"
+      android:textAppearance="?android:textAppearanceMedium"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintTop_toTopOf="@+id/item_image"
